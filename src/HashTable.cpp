@@ -55,9 +55,15 @@ void HashTable::Add(HashTableEntry entry) // Checks if HashTableEntry element ca
 {
     int arraySize = sizeof(this->Elements)/sizeof(this->Elements[0]);
     int key = calculateHash(entry); std::cout << "Key: " << key << std::endl;
+    bool exit = false;
 
     for(int i=0;i<arraySize;i++)
     {
+        if(exit == true)
+        {
+            break;
+        }
+
         if( i == key && this->Elements[i].name == "EMPTY") // We found the key AND Table Entry is Empty -> Paste our element here
         {
             this->Elements[i] = entry;
@@ -66,30 +72,52 @@ void HashTable::Add(HashTableEntry entry) // Checks if HashTableEntry element ca
         }
         else if ( i == key && this->Elements[i].name != "EMPTY") // We found the key BUT Table Entry is NOT Empty -> Quadratic Probing
         {
-            int probingOffset = 1;
-            int newPosition = probingOffset + i;
-            int exponent = 0;
+            int alternator = 2;     // even numbers -> +1,+4,+9 uneven numbers -> -1,-4,-9
+            int newPositionPositive = key;  // initialise to key
+            int newPositionNegative = key;
+            int collisions = 0;
 
-            while(this->Elements[newPosition].name != "EMPTY")
+
+            while(collisions <= 30 ) // Break if successfull OR after 30 collisions
             {
-                probingOffset = getExponential(2,exponent); // Example: 2^1 = 2; 2^2 = 4 and so on..
-                newPosition = probingOffset + i;
-                newPosition %= arraySize;                 // Make sure that key ( key == i here ) + offset DO NOT exceed the limits of our table. key + offset = newPosition
-                std::cout << "Exponential: " << probingOffset << std::endl;
-                exponent++;                                 // Increase exponent in case loop needs to reiterate once more.
+                if(exit==true)
+                {
+                    break;
+                }
 
+
+                collisions++;
+                for(int i=0; i<2;i++) // Check both directions before increasing collusions
+                {
+                    if(alternator%2 == 0)
+                    {
+                        newPositionPositive = newPositionPositive + 2* collisions -1;
+                        newPositionPositive%=arraySize;
+                        if (this->Elements[newPositionPositive].name == "EMPTY" )
+                        {
+                            this->Elements[newPositionPositive] = entry;
+                            std::cout << "Successfully put HashTableEntry with name -" << entry.name << " on (quadratic probing )position -" << newPositionPositive << std::endl;
+                            exit = true;
+                            break;// SUCCESS -> Exit Loop
+                        }
+                    }
+                    else if(alternator%2 == 1)
+                    {
+                        newPositionNegative = newPositionNegative - 2* collisions +1;
+                        newPositionNegative%=arraySize;
+                        newPositionNegative = newPositionNegative < 0 ? newPositionNegative+=arraySize : newPositionNegative;
+                        if (this->Elements[newPositionNegative].name == "EMPTY" )
+                        {
+                            this->Elements[newPositionNegative] = entry;
+                            std::cout << "Successfully put HashTableEntry with name -" << entry.name << " on (quadratic probing )position -" << newPositionNegative << std::endl;
+                            exit = true;
+                            break; // SUCCESS -> Exit Loop
+                        }
+                    }
+                    // Increase alternator if one of the if-Statements failed
+                    alternator++;
+                }
             }
-
-            std::cout << this->Elements[newPosition].name << std::endl;
-
-            if (this->Elements[newPosition].name == "EMPTY" )
-            {
-                this->Elements[newPosition] = entry;
-                std::cout << "Successfully put HashTableEntry with name -" << entry.name << " on (quadratic probing )position -" << newPosition << std::endl;
-            }
-
-
-            // Quadratische Sondierung
-        }
-    }
+        } // End of ( if key element of table is not empty -> begin quadratic probing )
+    } // End of for Loop
 }

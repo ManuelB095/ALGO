@@ -12,12 +12,12 @@ class HashTableEntry            // Data Structure to save Financial Data into.
         std::string wkn;
         std::string kurz;
 
-        DataSet* stockData;
+        DataSet stockData[5];
 
         HashTableEntry();       // ToDo: Add empty constructor; DO NOT USE FOR NOW!
         HashTableEntry(const HashTableEntry& other);
         HashTableEntry(std::string NAME, std::string WKN, std::string KURZ);
-        HashTableEntry(std::string NAME, std::string WKN, std::string KURZ, DataSet& stockDa);
+        HashTableEntry(std::string NAME, std::string WKN, std::string KURZ, DataSet stockDa[5]);
         virtual ~HashTableEntry();
 };
 

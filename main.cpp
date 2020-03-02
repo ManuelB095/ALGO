@@ -39,6 +39,32 @@ int main()
     ifstream stockFile;
     stockFile.open("msft.csv");
 
+    // This is for testing the PLOT Function
+    DataSet set1("2020-03-01",1,1,1,1,1,1); // Format : JAHR/MONAT/TAG
+    DataSet set2("2020-03-02",2,2,2,2,2,2);
+    DataSet set3("2020-03-03",3,3,3,3,3,3);
+    DataSet set4("2020-03-04",4,4,4,4,4,4);
+    DataSet set5("2020-03-05",5,5,5,5,5,5);
+
+    DataSet setVektor[5];
+    setVektor[0] = set1;
+    setVektor[1] = set2;
+    setVektor[2] = set3;
+    setVektor[3] = set4;
+    setVektor[4] = set5;
+
+    HashTableEntry testingThis("Microsoft","001","ST1", setVektor);
+
+    cout << testingThis.stockData[0].open << endl;
+    cout << testingThis.stockData[3].open << endl;
+    cout << testingThis.stockData[0].date << endl;
+    cout << "Yes";
+
+
+
+
+
+
     HashTableEntry StockEntry("Microsoft","0001","ST1"); /** Warning: This causes potential memory leaks **/
 
     // Everything below is for reading the column data into datasets. The first 30 lines ( 30 datasets ) will then be saved to StockEntry
@@ -94,8 +120,18 @@ int main()
             counter++;
         }
         // Now that firstThirtySets is full ( hopefully ), lets add it to our table.
-        StockEntry.stockData = firstThirtySets;
+        StockEntry.stockData[0] = firstThirtySets[0];
+        StockEntry.stockData[1] = firstThirtySets[1];
+        StockEntry.stockData[2] = firstThirtySets[2];
+        StockEntry.stockData[3] = firstThirtySets[3];
+        StockEntry.stockData[4] = firstThirtySets[4];
+
+        csvTestTable.Add(StockEntry); // Test Hash Table Adding System
         csvTestTable.Add(StockEntry);
+        csvTestTable.Add(StockEntry);
+        csvTestTable.Add(StockEntry);
+        csvTestTable.Add(StockEntry);
+
         stockFile.close();
     }
 
