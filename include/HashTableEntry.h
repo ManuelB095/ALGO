@@ -1,20 +1,23 @@
 #ifndef HASHTABLEENTRY_H
 #define HASHTABLEENTRY_H
 
+#include "DataSet.h"
 #include <vector>
 #include <string>
 
 class HashTableEntry            // Data Structure to save Financial Data into.
 {
-    public:
+    public:                     // Everything public so i don`t have to bother with GETTERs
         std::string name;
         std::string wkn;
         std::string kurz;
-        std::vector<std::string>data;   // Currently working with vectors, more because i want to learn how to use them.
+
+        DataSet* stockData;
 
         HashTableEntry();       // ToDo: Add empty constructor; DO NOT USE FOR NOW!
+        HashTableEntry(const HashTableEntry& other);
         HashTableEntry(std::string NAME, std::string WKN, std::string KURZ);
-        HashTableEntry(std::string NAME, std::string WKN, std::string KURZ, std::vector<std::string>DATA );
+        HashTableEntry(std::string NAME, std::string WKN, std::string KURZ, DataSet& stockDa);
         virtual ~HashTableEntry();
 };
 

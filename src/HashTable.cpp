@@ -13,7 +13,16 @@ HashTable::HashTable(int TABLESIZE)
 
 HashTable::~HashTable()
 {
-    //dtor
+
+}
+HashTable::HashTable(const HashTable& other)
+{
+    this->tableSize = other.tableSize;
+    int arraySize = sizeof(this->Elements)/sizeof(this->Elements[0]);
+    for(int i=0; i < arraySize;i++)
+    {
+        this->Elements[i] = other.Elements[i];
+    }
 }
 
 int HashTable::calculateHash(HashTableEntry entry) // Calculates Hash-Key based on entry.name

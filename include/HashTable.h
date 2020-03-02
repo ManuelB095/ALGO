@@ -18,6 +18,7 @@ class HashTable
         HashTableEntry Elements[1001];       // Array of HashTableEntrys represents actual table; Hardcoded for now!!
 
         HashTable(int TABLESIZE);            // ToDo: Make TABLESIZE actually matter!
+        HashTable(const HashTable& other);
         virtual ~HashTable();
 
         // METHODEN
