@@ -1,6 +1,7 @@
 #ifndef DATASET_H
 #define DATASET_H
 
+#include "DataSet.h"
 #include <string>
 
 class DataSet
