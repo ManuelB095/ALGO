@@ -132,9 +132,9 @@ void printStockDataSets(Stock& myStock)
         {
             dataSetCounter++;
             cout << "Entry Nr." << (i+1) << ": " << "Date -> " << myStock.stockEntrys[i].date << endl;
-            cout << "Open: " << myStock.stockEntrys[i].open << "High: " << myStock.stockEntrys[i].high
-                 << "Low: "  << myStock.stockEntrys[i].low  << "Close: "<< myStock.stockEntrys[i].close
-                 << "Volume: " << myStock.stockEntrys[i].volume << "AdjClose: " << myStock.stockEntrys[i].adjClose << endl;
+            cout << "Open: " << myStock.stockEntrys[i].open << " High: " << myStock.stockEntrys[i].high
+                 << " Low: "  << myStock.stockEntrys[i].low  << " Close: "<< myStock.stockEntrys[i].close
+                 << " Volume: " << myStock.stockEntrys[i].volume << " AdjClose: " << myStock.stockEntrys[i].adjClose << endl;
         }
     }
     if(dataSetCounter == 0)
@@ -142,6 +142,7 @@ void printStockDataSets(Stock& myStock)
         cout << "No available Data for " << myStock.name << " yet." << endl;
     }
 }
+
 void deleteStockDataSets(Stock& myStock)
 {
     DataSet EmptySet("EMPTY",0,0,0,0,0,0);
@@ -154,6 +155,190 @@ void deleteStockDataSets(Stock& myStock)
     {
         myStock.stockEntrys[i] = EmptySet;
     }
+}
+
+//Plotfunktionen
+double getMax(Stock& myStock, int wert)
+{
+    double maxWert;
+    //maxWert auf den ersten eintrag setzen
+    switch(wert)
+    {
+    case 0:
+        {
+            maxWert = myStock.stockEntrys[0].open;
+        }
+    case 1:
+        {
+            maxWert = myStock.stockEntrys[0].high;
+        }
+    case 2:
+        {
+            maxWert = myStock.stockEntrys[0].low;
+        }
+    case 3:
+        {
+            maxWert = myStock.stockEntrys[0].close;
+        }
+    case 4:
+        {
+            maxWert = myStock.stockEntrys[0].volume;
+        }
+    case 5:
+        {
+            maxWert = myStock.stockEntrys[0].adjClose;
+        }
+    }
+    //Max-Wert finden
+    for(int i=1; i<myStock.entrySize; i++)
+    {
+        if(myStock.stockEntrys[i].date != "EMPTY")
+        {
+            switch(wert)
+            {
+            case 0:
+                {
+                    if(myStock.stockEntrys[i].open>maxWert)
+                    {
+                        maxWert=myStock.stockEntrys[i].open;
+                    }
+                    break;
+                }
+            case 1:
+                {
+                    if(myStock.stockEntrys[i].high>maxWert)
+                    {
+                        maxWert=myStock.stockEntrys[i].high;
+                    }
+                    break;
+                }
+            case 2:
+                {
+                    if(myStock.stockEntrys[i].low>maxWert)
+                    {
+                        maxWert=myStock.stockEntrys[i].low;
+                    }
+                    break;
+                }
+            case 3:
+                {
+                    if(myStock.stockEntrys[i].close>maxWert)
+                    {
+                        maxWert=myStock.stockEntrys[i].close;
+                    }
+                    break;
+                }
+            case 4:
+                {
+                    if(myStock.stockEntrys[i].volume>maxWert)
+                    {
+                        maxWert=myStock.stockEntrys[i].volume;
+                    }
+                    break;
+                }
+            case 5:
+                {
+                    if(myStock.stockEntrys[i].adjClose>maxWert)
+                    {
+                        maxWert=myStock.stockEntrys[i].adjClose;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return maxWert;
+}
+
+void plot(Stock& myStock, int wert)
+{
+   double maxWert = getMax(myStock, wert);
+   int dataSetCounter=0;
+
+    for(int i=0; i<myStock.entrySize; i++)
+    {
+        if(myStock.stockEntrys[i].date != "EMPTY")
+        {
+            dataSetCounter++;
+            double z=0;
+            cout << myStock.stockEntrys[i].date << ": ";
+
+            switch(wert)
+            {
+            case 0:
+                {
+                    double compare = myStock.stockEntrys[i].open / maxWert * 100;
+                    while(z <=compare)
+                    {
+                        cout << "|";
+                        z++;
+                    }
+                    cout << endl << endl;
+                    break;
+                }
+            case 1:
+                {
+                    double compare = myStock.stockEntrys[i].high / maxWert * 100;
+                    while(z <=compare)
+                    {
+                        cout << "|";
+                        z++;
+                    }
+                    cout << endl << endl;
+                    break;
+                }
+            case 2:
+                {
+                    double compare = myStock.stockEntrys[i].low / maxWert * 100;
+                    while(z <=compare)
+                    {
+                        cout << "|";
+                        z++;
+                    }
+                    cout << endl << endl;
+                    break;
+                }
+            case 3:
+                {
+                    double compare = myStock.stockEntrys[i].close / maxWert * 100;
+                    while(z <=compare)
+                    {
+                        cout << "|";
+                        z++;
+                    }
+                    cout << endl << endl;
+                    break;
+                }
+            case 4:
+                {
+                    double compare = myStock.stockEntrys[i].volume / maxWert * 100;
+                    while(z <=compare)
+                    {
+                        cout << "|";
+                        z++;
+                    }
+                    cout << endl << endl;
+                    break;
+                }
+            case 5:
+                {
+                    double compare = myStock.stockEntrys[i].adjClose / maxWert * 100;
+                    while(z <=compare)
+                    {
+                        cout << "|";
+                        z++;
+                    }
+                    cout << endl << endl;
+                    break;
+                }
+            }
+        }
+    }
+   if(dataSetCounter == 0)
+    {
+        cout << "No available Data for " << myStock.name << " yet." << endl;
+    }
+
 }
 
 int main()
@@ -265,6 +450,37 @@ int main()
             }
             break;
         case 4:     // PLOT Stock Data
+            {
+
+                string name;
+                int wert;
+                cout << "Please enter the name of the Stock: ";
+                cin >> name;
+                cout << "(0)Get the OPEN Data" << endl;
+                cout << "(1)Get the HIGH Data" << endl;
+                cout << "(2)Get the LOW Data" << endl;
+                cout << "(3)Get the CLOSE Data" << endl;
+                cout << "(4)Get the VOLUME Data" << endl;
+                cout << "(5)Get the ADJCLOSE Data" << endl;
+                cin >> wert;
+
+                if(wert > 5 || wert < 0)
+                {
+                    cout << "Something went wrong." << endl;
+                }
+                int stockLocationInMemory = nameTable.FindByName(name);
+
+                if(stockLocationInMemory != -1)
+                {
+                    plot(stockStorageArray[stockLocationInMemory], wert);
+                }
+
+                if(stockLocationInMemory == -1)
+                {
+                    cout << "The stock with name " << name << " has been deleted from the Table." << endl;
+                }
+                displayOperationEndLine();
+            }
             break;
         case 5:     // SAVE/EXPORT To File
             break;
