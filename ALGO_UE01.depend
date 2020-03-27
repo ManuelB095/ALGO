@@ -34,31 +34,32 @@
 	<functional>
 	"HashtableEntry.h"
 
-1583153573 source:c:\c++\algo\algo_ue01\main.cpp
+1584276270 source:c:\c++\algo\algo_ue01\main.cpp
 	<vector>
 	<string>
 	"HashTableEntry.h"
 	"HashTable.h"
 	"DataSet.h"
+	"Stock.h"
 	<iostream>
 	<sstream>
 	<fstream>
 
-1583159624 c:\c++\algo\algo_ue01\include\hashtableentry.h
+1583744665 c:\c++\algo\algo_ue01\include\hashtableentry.h
 	"DataSet.h"
 	<vector>
 	<string>
 
-1583101125 c:\c++\algo\algo_ue01\include\hashtable.h
+1584270441 c:\c++\algo\algo_ue01\include\hashtable.h
 	<vector>
 	<string>
 	<functional>
-	"HashtableEntry.h"
-
-1583159845 source:c:\c++\algo\algo_ue01\src\hashtableentry.cpp
 	"HashTableEntry.h"
 
-1583155360 source:c:\c++\algo\algo_ue01\src\hashtable.cpp
+1583744665 source:c:\c++\algo\algo_ue01\src\hashtableentry.cpp
+	"HashTableEntry.h"
+
+1584275451 source:c:\c++\algo\algo_ue01\src\hashtable.cpp
 	"HashTable.h"
 	<iostream>
 
@@ -67,9 +68,67 @@
 
 1583086569 c:\c++\algo\algo_ue01\include\csv.h
 
-1583100399 c:\c++\algo\algo_ue01\include\dataset.h
+1583741759 c:\c++\algo\algo_ue01\include\dataset.h
+	"DataSet.h"
 	<string>
 
-1583100452 source:c:\c++\algo\algo_ue01\src\dataset.cpp
+1583743899 source:c:\c++\algo\algo_ue01\src\dataset.cpp
 	"DataSet.h"
+
+1584195352 source:c:\c++\algo\algo_ue01\src\stock.cpp
+	"Stock.h"
+
+1584195352 c:\c++\algo\algo_ue01\include\stock.h
+	"DataSet.h"
+	<vector>
+	<string>
+
+1585271127 source:c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\main.cpp
+	<vector>
+	<string>
+	"HashTableEntry.h"
+	"HashTable.h"
+	"DataSet.h"
+	"Stock.h"
+	<iostream>
+	<sstream>
+	<fstream>
+
+1584284347 c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\include\hashtableentry.h
+	"DataSet.h"
+	<vector>
+	<string>
+
+1584284346 c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\include\dataset.h
+	"DataSet.h"
+	<string>
+
+1584284346 c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\include\hashtable.h
+	<vector>
+	<string>
+	<functional>
+	"HashTableEntry.h"
+
+1584284347 c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\include\stock.h
+	"DataSet.h"
+	<vector>
+	<string>
+
+1584284347 source:c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\src\csv.cpp
+	"CSV.h"
+
+1584284346 c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\include\csv.h
+
+1584284347 source:c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\src\dataset.cpp
+	"DataSet.h"
+
+1584284347 source:c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\src\hashtable.cpp
+	"HashTable.h"
+	<iostream>
+
+1584284347 source:c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\src\hashtableentry.cpp
+	"HashTableEntry.h"
+
+1584284347 source:c:\users\angelo raffael thau\onedrive\dokumente\uebungen\technikum\algo\algo-master\src\stock.cpp
+	"Stock.h"
 

@@ -38,11 +38,13 @@
 		<Unit filename="include/DataSet.h" />
 		<Unit filename="include/HashTable.h" />
 		<Unit filename="include/HashTableEntry.h" />
+		<Unit filename="include/Stock.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/CSV.cpp" />
 		<Unit filename="src/DataSet.cpp" />
 		<Unit filename="src/HashTable.cpp" />
 		<Unit filename="src/HashTableEntry.cpp" />
+		<Unit filename="src/Stock.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
