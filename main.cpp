@@ -8,7 +8,6 @@
 #include <sstream>
 #include <fstream>
 
-
 using std::cout;
 using std::cin;
 using std::endl;
@@ -25,7 +24,7 @@ void displayMenu()
     cout << "(3)Find/Display Stock Data ( by Name )" << endl;
     cout << "(4)Plot Stock Data" << endl;
     cout << "(5)Save/Export to File" << endl;
-    cout << "(6) Load Table" << endl;
+    cout << "(6)Load Table" << endl;
     cout << "(9)Exit Program" << endl;
 }
 void displayOperationEndLine()
@@ -104,9 +103,10 @@ void importStockData(string filename, Stock& newStock, int MAXCOUNT)
     }
 }
 
-int findNextAvailablePosition(Stock* myStorageArray, int stockLength)
+int findNextAvailablePosition(Stock (&myStorageArray)[5])
 {
-    for(int i=0; i<stockLength;i++)
+    int arraySize = sizeof(myStorageArray)/sizeof(myStorageArray[0]);
+    for(int i=0; i<arraySize;i++)
     {
         if(myStorageArray[i].name == "EMPTY" || myStorageArray[i].name == "DELETED")
         {
@@ -116,9 +116,9 @@ int findNextAvailablePosition(Stock* myStorageArray, int stockLength)
     return -1;
 }
 
-int PutStockInMemory(Stock& myStock, Stock* myStorageArray, int stocklength)
+int PutStockInMemory(Stock& myStock, Stock (&myStorageArray)[5])
 {
-    int nextAvailablePos = findNextAvailablePosition(myStorageArray, stocklength);
+    int nextAvailablePos = findNextAvailablePosition(myStorageArray);
     myStorageArray[nextAvailablePos] = myStock;
     return nextAvailablePos;
 }
@@ -341,20 +341,204 @@ void plot(Stock& myStock, int wert)
 
 }
 
+//Save Funktionen
+
+void save(HashTable hashTable, Stock stockTable[5])
+{
+     //HashTable save
+     std::ofstream hashFile;
+     hashFile.open ("HashSave.csv");
+      for(int i = 0; i<2011;i++)
+      {
+        hashFile << hashTable.Elements[i].name<< "," << hashTable.Elements[i].wkn << ","<< hashTable.Elements[i].memoryLocation<< endl;
+      }
+        hashFile.close();
+    //Stocklist save
+    std::ofstream stockFile;
+    stockFile.open ("StockSave.csv");
+        for(int i=0;i<5;i++)
+        {
+            stockFile<< stockTable[i].name << "," << stockTable[i].wkn << "," << stockTable[i].kurzel << endl;
+            //stockFile<< "Date,Open,High,Low,Close,Volume,Adj Close"<< endl;
+            for(int y=0;y<stockTable->entrySize;y++)
+            {
+                stockFile<< stockTable[i].stockEntrys[y].date <<","<< stockTable[i].stockEntrys[y].open <<","<<stockTable[i].stockEntrys[y].high <<","<<stockTable[i].stockEntrys[y].low <<","<<stockTable[i].stockEntrys[y].close <<","<<stockTable[i].stockEntrys[y].volume <<","<<stockTable[i].stockEntrys[y].adjClose<< endl;
+            }
+        }
+        stockFile.close();
+}
+
+//Import-Funktion
+
+void import(HashTable& hashTable, Stock (&stockTable)[5]) //change to 30 when done
+{
+    string line;
+    char separator = ',';
+    int columns = 3;
+    ifstream saveFile;
+    saveFile.open("HashSave.csv");
+    int counter=0;
+
+    if (saveFile.is_open() )
+    {
+        while( getline(saveFile,line)&& counter<2011)
+        {
+            std::stringstream linestream(line);
+            string::size_type size_t;
+
+            for(int i=0;i<columns;i++)
+            {
+                string temp;
+                if(i==2)
+                {
+                    getline(linestream,temp,'\n');
+                }
+                else
+                {
+                    getline(linestream,temp,separator);
+                }
+
+                switch(i)
+                {
+                    case(0):
+                    {
+                         hashTable.Elements[counter].name = temp;
+                         break;
+                    }
+                    case(1):
+                    {
+                         hashTable.Elements[counter].wkn = temp;
+                         break;
+                    }
+                    case(2):
+                    {
+                         hashTable.Elements[counter].memoryLocation = std::stod(temp, &size_t);
+                         break;
+                    }
+                }
+            }
+            counter++;
+        }
+        saveFile.close();
+    }
+
+    ifstream stockFile;
+    saveFile.open("StockSave.csv");
+    counter=0;
+    DataSet firstThirtySets[5]; //change to 30? when done
+    int stockCounter=0;
+    int dataSetCounter=0;
+
+        if (saveFile.is_open() )
+    {
+            while( getline(saveFile,line)&& counter<30)//Change this to 2011*6 once done
+            {
+                std::stringstream linestream(line);
+                string::size_type size_t;
+                columns =3;
+
+                if(counter%6==0)
+                {
+                     for(int i=0;i<columns;i++)
+                    {
+                    string temp;
+                    if(i==2)
+                    {
+                        getline(linestream,temp,'\n');
+                    }
+                    else
+                    {
+                        getline(linestream,temp,separator);
+                    }
+
+                    switch(i)
+                    {
+                        case(0):
+                        {
+                            stockTable[stockCounter].name = temp;
+                            break;
+                        }
+                        case(1):
+                        {
+                            stockTable[stockCounter].wkn = temp;
+                            break;
+                        }
+                        case(2):
+                        {
+                            stockTable[stockCounter].kurzel = temp;
+                            break;
+                        }
+                    }
+                    }
+                    stockCounter++;
+                }
+                else
+                {
+
+                    //DataSet temporarySet;
+                     if(dataSetCounter%5==0) //change this to 30 when done
+                    {
+                        dataSetCounter=0;
+                    }
+                    columns = 7;
+                    for(int i=0; i < columns;i++)
+                    {
+                        string temp;
+                        if(i==6)
+                    {
+                        getline(linestream,temp,'\n');
+                    }
+                    else
+                    {
+                        getline(linestream,temp,separator);
+                    }
+
+                    switch(i)
+                    {
+                    case 0:
+                        stockTable[stockCounter-1].stockEntrys[dataSetCounter].date =temp;
+                        break;
+                    case 1:
+                        stockTable[stockCounter-1].stockEntrys[dataSetCounter].open = std::stod(temp, &size_t);
+                        break;
+                    case 2:
+                        stockTable[stockCounter-1].stockEntrys[dataSetCounter].high = std::stod(temp, &size_t);
+                        break;
+                    case 3:
+                        stockTable[stockCounter-1].stockEntrys[dataSetCounter].low = std::stod(temp, &size_t);
+                        break;
+                    case 4:
+                        stockTable[stockCounter-1].stockEntrys[dataSetCounter].close = std::stod(temp, &size_t);
+                        break;
+                    case 5:
+                        stockTable[stockCounter-1].stockEntrys[dataSetCounter].volume = std::stod(temp, &size_t);
+                        break;
+                    case 6:
+                        stockTable[stockCounter-1].stockEntrys[dataSetCounter].adjClose = std::stod(temp, &size_t);
+                        break;
+                    }
+                    }
+
+            dataSetCounter++;
+            }
+
+            counter++;
+            }
+
+        saveFile.close();
+    }
+}
+
 int main()
 {
     /** TO DO: Implement stockStorageArray and HashTable on the HEAP instead of the STACK.
         Other Functions will have to be adjusted a bit for that to work ( pass by reference for example with : *&myArray )
 
-        TO DO: Implement Plotting Function ( just copy paste if you already have that, should work fine )
-
         TO DO: Implement LOAD/SAVE Table -> The only REAL Work still left to do. This one might get on our nerves.
                I have a basic import function for Stock Data in Place already, which might be useful.
      **/
-    Stock* stockStorageArray = new Stock[5];
-    HashTable* nameTable = new HashTable;
-
-    cout << nameTable->Elements[9].name << endl;
+    Stock stockStorageArray[5];
+    HashTable nameTable;
 
     int opNumber = -1;
 
@@ -378,11 +562,11 @@ int main()
 
                 // Add Stock to Memory
                 Stock newStock(name,wkn,kurz);
-                int positionInMemory = PutStockInMemory(newStock,stockStorageArray, 5);
+                int positionInMemory = PutStockInMemory(newStock,stockStorageArray);
 
                 // Add Stock to HashTable
                 HashTableEntry newEntry(name,wkn,positionInMemory);
-                nameTable->Add(newEntry);
+                nameTable.Add(newEntry);
                 cout << "Successfully added new Stock: " << stockStorageArray[0].name << endl;
                 displayOperationEndLine();
                 break;
@@ -394,13 +578,13 @@ int main()
                 cin >> name;
 
                 // Delete From Memory
-                int stockLocationInMemory = nameTable->FindByName(name);
+                int stockLocationInMemory = nameTable.FindByName(name);
                 if(stockLocationInMemory != -1)
                 {
                     deleteStockDataSets(stockStorageArray[stockLocationInMemory]);
                 }
                  // Delete From HashTable
-                nameTable->DeleteFromTable(name);
+                nameTable.DeleteFromTable(name);
 
                 displayOperationEndLine();
                 break;
@@ -415,7 +599,7 @@ int main()
                 cin >> fileName;
 
                 // If STOCK Exists -> Write
-                int stockLocationInMemory = nameTable->FindByName(name);
+                int stockLocationInMemory = nameTable.FindByName(name);
                 if(stockLocationInMemory != -1)
                 {
                     try {
@@ -438,7 +622,7 @@ int main()
                 cout << "Please enter the name of the Stock: ";
                 cin >> name;
 
-                int stockLocationInMemory = nameTable->FindByName(name);
+                int stockLocationInMemory = nameTable.FindByName(name);
                 // Print everything thats in "Stock"
                 if(stockLocationInMemory != -1)
                 {
@@ -470,7 +654,7 @@ int main()
                 {
                     cout << "Something went wrong." << endl;
                 }
-                int stockLocationInMemory = nameTable->FindByName(name);
+                int stockLocationInMemory = nameTable.FindByName(name);
 
                 if(stockLocationInMemory != -1)
                 {
@@ -479,28 +663,32 @@ int main()
 
                 if(stockLocationInMemory == -1)
                 {
-                    cout << "The stock with name " << name << " has not been found or was deleted from the Table." << endl;
+                    cout << "The stock with name " << name << " has been deleted from the Table." << endl;
                 }
                 displayOperationEndLine();
             }
             break;
         case 5:     // SAVE/EXPORT To File
+            {
+                save(nameTable, stockStorageArray);
+                cout<<"done!"<<endl;
+            }
             break;
         case 6:     // LOAD Table
+            {
+                import(nameTable, stockStorageArray);
+                cout<<"done!"<<endl;
+            }
             break;
         case 7:     // Currently Unused
             break;
         case 8:     // Currently Unused
             break;
         case 9:     // EXIT Program
-            delete[] stockStorageArray;
-            delete nameTable;
             return 0;
         }
         if(opNumber > 9 || opNumber < 0)
         {
-            delete[] stockStorageArray;
-            delete nameTable;
             cout << "Something went wrong." << endl;
         }
     }
