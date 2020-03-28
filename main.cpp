@@ -8,6 +8,7 @@
 #include <sstream>
 #include <fstream>
 
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -103,10 +104,9 @@ void importStockData(string filename, Stock& newStock, int MAXCOUNT)
     }
 }
 
-int findNextAvailablePosition(Stock (&myStorageArray)[5])
+int findNextAvailablePosition(Stock* myStorageArray, int stockLength)
 {
-    int arraySize = sizeof(myStorageArray)/sizeof(myStorageArray[0]);
-    for(int i=0; i<arraySize;i++)
+    for(int i=0; i<stockLength;i++)
     {
         if(myStorageArray[i].name == "EMPTY" || myStorageArray[i].name == "DELETED")
         {
@@ -116,9 +116,9 @@ int findNextAvailablePosition(Stock (&myStorageArray)[5])
     return -1;
 }
 
-int PutStockInMemory(Stock& myStock, Stock (&myStorageArray)[5])
+int PutStockInMemory(Stock& myStock, Stock* myStorageArray, int stocklength)
 {
-    int nextAvailablePos = findNextAvailablePosition(myStorageArray);
+    int nextAvailablePos = findNextAvailablePosition(myStorageArray, stocklength);
     myStorageArray[nextAvailablePos] = myStock;
     return nextAvailablePos;
 }
@@ -351,8 +351,10 @@ int main()
         TO DO: Implement LOAD/SAVE Table -> The only REAL Work still left to do. This one might get on our nerves.
                I have a basic import function for Stock Data in Place already, which might be useful.
      **/
-    Stock stockStorageArray[5];
-    HashTable nameTable;
+    Stock* stockStorageArray = new Stock[5];
+    HashTable* nameTable = new HashTable;
+
+    cout << nameTable->Elements[9].name << endl;
 
     int opNumber = -1;
 
@@ -376,11 +378,11 @@ int main()
 
                 // Add Stock to Memory
                 Stock newStock(name,wkn,kurz);
-                int positionInMemory = PutStockInMemory(newStock,stockStorageArray);
+                int positionInMemory = PutStockInMemory(newStock,stockStorageArray, 5);
 
                 // Add Stock to HashTable
                 HashTableEntry newEntry(name,wkn,positionInMemory);
-                nameTable.Add(newEntry);
+                nameTable->Add(newEntry);
                 cout << "Successfully added new Stock: " << stockStorageArray[0].name << endl;
                 displayOperationEndLine();
                 break;
@@ -392,13 +394,13 @@ int main()
                 cin >> name;
 
                 // Delete From Memory
-                int stockLocationInMemory = nameTable.FindByName(name);
+                int stockLocationInMemory = nameTable->FindByName(name);
                 if(stockLocationInMemory != -1)
                 {
                     deleteStockDataSets(stockStorageArray[stockLocationInMemory]);
                 }
                  // Delete From HashTable
-                nameTable.DeleteFromTable(name);
+                nameTable->DeleteFromTable(name);
 
                 displayOperationEndLine();
                 break;
@@ -413,7 +415,7 @@ int main()
                 cin >> fileName;
 
                 // If STOCK Exists -> Write
-                int stockLocationInMemory = nameTable.FindByName(name);
+                int stockLocationInMemory = nameTable->FindByName(name);
                 if(stockLocationInMemory != -1)
                 {
                     try {
@@ -436,7 +438,7 @@ int main()
                 cout << "Please enter the name of the Stock: ";
                 cin >> name;
 
-                int stockLocationInMemory = nameTable.FindByName(name);
+                int stockLocationInMemory = nameTable->FindByName(name);
                 // Print everything thats in "Stock"
                 if(stockLocationInMemory != -1)
                 {
@@ -468,7 +470,7 @@ int main()
                 {
                     cout << "Something went wrong." << endl;
                 }
-                int stockLocationInMemory = nameTable.FindByName(name);
+                int stockLocationInMemory = nameTable->FindByName(name);
 
                 if(stockLocationInMemory != -1)
                 {
@@ -477,7 +479,7 @@ int main()
 
                 if(stockLocationInMemory == -1)
                 {
-                    cout << "The stock with name " << name << " has been deleted from the Table." << endl;
+                    cout << "The stock with name " << name << " has not been found or was deleted from the Table." << endl;
                 }
                 displayOperationEndLine();
             }
@@ -491,10 +493,14 @@ int main()
         case 8:     // Currently Unused
             break;
         case 9:     // EXIT Program
+            delete[] stockStorageArray;
+            delete nameTable;
             return 0;
         }
         if(opNumber > 9 || opNumber < 0)
         {
+            delete[] stockStorageArray;
+            delete nameTable;
             cout << "Something went wrong." << endl;
         }
     }
