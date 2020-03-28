@@ -7,7 +7,6 @@ Stock::Stock()
     this->name = "EMPTY";
     this->wkn = "EMPTY";
     this->kurzel = "EMPTY";
-    this->entrySize = 5;
     for(int i=0; i < entrySize;++i)
     {
         this->stockEntrys[i] = emptySet;
@@ -19,7 +18,6 @@ Stock::Stock(std::string NAME, std::string WKN, std::string KURZEL, DataSet Entr
     this->name = NAME;
     this->wkn = WKN;
     this->kurzel = KURZEL;
-
 
     for(int i=0; i < this->entrySize;++i)
     {
@@ -35,7 +33,6 @@ Stock::Stock(std::string NAME, std::string WKN, std::string KURZEL)
     this->name = NAME;
     this->wkn = WKN;
     this->kurzel = KURZEL;
-    this->entrySize = 5;
     for(int i=0; i < entrySize;++i)
     {
         this->stockEntrys[i] = emptySet;
