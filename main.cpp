@@ -24,7 +24,7 @@ void displayMenu()
     cout << "(3)Find/Display Stock Data ( by Name )" << endl;
     cout << "(4)Plot Stock Data" << endl;
     cout << "(5)Save/Export to File" << endl;
-    cout << "(6) Load Table" << endl;
+    cout << "(6)Load Table" << endl;
     cout << "(9)Exit Program" << endl;
 }
 void displayOperationEndLine()
@@ -341,12 +341,93 @@ void plot(Stock& myStock, int wert)
 
 }
 
+//Save Funktionen
+
+void save(HashTable hashTable, Stock stockTable[5])
+{
+     //HashTable save
+     std::ofstream hashFile;
+     hashFile.open ("HashSave.csv");
+      for(int i = 0; i<2011;i++)
+      {
+        hashFile << hashTable.Elements[i].name<< "," << hashTable.Elements[i].wkn << ","<< hashTable.Elements[i].memoryLocation<< ","<< endl;
+      }
+        hashFile.close();
+    //Stocklist save
+    std::ofstream stockFile;
+    stockFile.open ("StockSave.csv");
+        for(int i=0;i<5;i++)
+        {
+            stockFile<< stockTable[i].name << "," << stockTable[i].wkn << "," << stockTable[i].kurzel << "," << endl;
+            stockFile<< "Date,Open,High,Low,Close,Volume,Adj Close"<< endl;
+            for(int y=0;y<stockTable->entrySize;y++)
+            {
+                stockFile<< stockTable[i].stockEntrys[y].date <<","<< stockTable[i].stockEntrys[y].open <<","<<stockTable[i].stockEntrys[y].high <<","<<stockTable[i].stockEntrys[y].low <<","<<stockTable[i].stockEntrys[y].close <<","<<stockTable[i].stockEntrys[y].volume <<","<<stockTable[i].stockEntrys[y].adjClose<< endl;
+            }
+        }
+        stockFile.close();
+}
+
+//Import-Funktion
+
+void import(HashTable hashTable, Stock stockTable[5])
+{
+    string line;
+    char separator = ',';
+    int columns = 3;
+    ifstream hashFile;
+    hashFile.open("HashSave.csv");
+    int counter=0;
+
+    if (hashFile.is_open()&& counter<2011 )
+    {
+        while( getline(hashFile,line))
+        {
+            std::stringstream linestream(line);
+            string::size_type size_t;
+
+            for(int i=0;i<columns;i++)
+            {
+                string temp;
+                if(i==2)
+                {
+                    getline(linestream,temp,'\n');
+                }
+                else
+                {
+                    getline(linestream,temp,separator);
+                }
+
+                switch(i)
+                {
+                    case(0):
+                    {
+                         hashTable.Elements[counter].name = temp;
+                         break;
+                    }
+                    case(1):
+                    {
+                         hashTable.Elements[counter].wkn = temp;
+                         break;
+                    }
+                    case(2):
+                    {
+                         hashTable.Elements[counter].memoryLocation = std::stod(temp, &size_t);
+                         break;
+                    }
+                }
+            counter++;
+            }
+        }
+        hashFile.close();
+    }
+
+}
+
 int main()
 {
     /** TO DO: Implement stockStorageArray and HashTable on the HEAP instead of the STACK.
         Other Functions will have to be adjusted a bit for that to work ( pass by reference for example with : *&myArray )
-
-        TO DO: Implement Plotting Function ( just copy paste if you already have that, should work fine )
 
         TO DO: Implement LOAD/SAVE Table -> The only REAL Work still left to do. This one might get on our nerves.
                I have a basic import function for Stock Data in Place already, which might be useful.
@@ -483,8 +564,16 @@ int main()
             }
             break;
         case 5:     // SAVE/EXPORT To File
+            {
+                save(nameTable, stockStorageArray);
+                cout<<"done!"<<endl;
+            }
             break;
         case 6:     // LOAD Table
+            {
+                import(nameTable, stockStorageArray);
+                cout<<"done!"<<endl;
+            }
             break;
         case 7:     // Currently Unused
             break;
