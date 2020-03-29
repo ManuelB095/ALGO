@@ -27,7 +27,7 @@ void displayMenu()
     cout << "(4)Plot Stock Data" << endl;
     cout << "(5)Save/Export to File" << endl;
     cout << "(6)Load Table" << endl;
-    cout << "(7)Load Table" << endl;
+    cout << "(7)DummyFill" << endl;
     cout << "(9)Exit Program" << endl;
 }
 void displayOperationEndLine()
@@ -53,7 +53,7 @@ void importStockData(string filename, Stock& newStock, int MAXCOUNT)
         getline(stockFile,line); // Read in first line ( = Headlines of the columns ) and discard it.
         int counter = 0;
 
-        while(getline(stockFile,line) && counter < MAXCOUNT) // !! Change to 30 when DONE !!
+        while(getline(stockFile,line) && counter < MAXCOUNT)
         {
             std::stringstream linestream(line); // What this does is basically this: stringstream takes a string ( here: line ) and
             string::size_type size_t;           // wraps it in an iostream. For example you could do: linestream << "addThisText"; and addThisText would be added to the line.
@@ -103,6 +103,9 @@ void importStockData(string filename, Stock& newStock, int MAXCOUNT)
         {
             newStock.stockEntrys[i] = firstThirtySets[i];
         }
+    }
+    else{
+        cout << "ERROR: Could not find/open file !" << endl;
     }
 }
 
@@ -345,7 +348,7 @@ void plot(Stock& myStock, int wert)
 
 //Save Funktionen
 
-void save(HashTable* hashTable, Stock* stockTable, int stockTableLength)
+void save(HashTable* hashTable,HashTable* wknTable, Stock* stockTable, int stockTableLength)
 {
      //HashTable save
      std::ofstream hashFile;
@@ -355,6 +358,14 @@ void save(HashTable* hashTable, Stock* stockTable, int stockTableLength)
         hashFile << hashTable->Elements[i].name<< "," << hashTable->Elements[i].wkn << ","<< hashTable->Elements[i].memoryLocation<< endl;
       }
         hashFile.close();
+     //WKN-HashTable save
+     std::ofstream wknFile;
+     wknFile.open ("WKNSave.csv");
+      for(int i = 0; i<2011;i++)
+      {
+        wknFile << wknTable->Elements[i].name<< "," << wknTable->Elements[i].wkn << ","<< wknTable->Elements[i].memoryLocation<< endl;
+      }
+        wknFile.close();
     //Stocklist save
     std::ofstream stockFile;
     stockFile.open ("StockSave.csv");
@@ -373,7 +384,7 @@ void save(HashTable* hashTable, Stock* stockTable, int stockTableLength)
 
 //Import-Funktion
 
-void import(HashTable* hashTable, Stock* stockTable, int stockTableLength) //change to 30 when done
+void import(HashTable* hashTable, HashTable* wknTable, Stock* stockTable, int stockTableLength) //change to 30 when done
 {
     string line;
     char separator = ',';
@@ -381,6 +392,8 @@ void import(HashTable* hashTable, Stock* stockTable, int stockTableLength) //cha
     ifstream saveFile;
     saveFile.open("HashSave.csv");
     int counter=0;
+
+    // Load Data For Name Hash-Table
 
     if (saveFile.is_open() )
     {
@@ -423,6 +436,58 @@ void import(HashTable* hashTable, Stock* stockTable, int stockTableLength) //cha
             counter++;
         }
         saveFile.close();
+    }
+
+    // Load Data for WKN Hash-Table
+
+    line = "";
+    separator = ',';
+    columns = 3;
+    ifstream saveWKNFile;
+    saveWKNFile.open("WKNSave.csv");
+    counter=0;
+
+    if (saveWKNFile.is_open() )
+    {
+        while( getline(saveWKNFile,line)&& counter<2011)
+        {
+            std::stringstream linestream(line);
+            string::size_type size_t;
+
+            for(int i=0;i<columns;i++)
+            {
+                string temp;
+                if(i==2)
+                {
+                    getline(linestream,temp,'\n');
+                }
+                else
+                {
+                    getline(linestream,temp,separator);
+                }
+
+                switch(i)
+                {
+                    case(0):
+                    {
+                         wknTable->Elements[counter].name = temp;
+                         break;
+                    }
+                    case(1):
+                    {
+                         wknTable->Elements[counter].wkn = temp;
+                         break;
+                    }
+                    case(2):
+                    {
+                         wknTable->Elements[counter].memoryLocation = std::stod(temp, &size_t);
+                         break;
+                    }
+                }
+            }
+            counter++;
+        }
+        saveWKNFile.close();
     }
 
     ifstream stockFile;
@@ -532,7 +597,7 @@ void import(HashTable* hashTable, Stock* stockTable, int stockTableLength) //cha
     }
 }
 
-void dummyFill(HashTable* myTable, Stock* myStorageArray, int storArrLength)
+void dummyFill(HashTable* myTable,HashTable* mySecondTable, Stock* myStorageArray, int storArrLength)
 {
     for(int i=0; i < 1500; i++ ) // Make 1500 random dummy entrys
     {
@@ -553,9 +618,11 @@ void dummyFill(HashTable* myTable, Stock* myStorageArray, int storArrLength)
             string counterString = std::to_string(i);
             Stock newStock(istring,wstring,counterString);
             int positionInMemory = PutStockInMemory(newStock,myStorageArray, storArrLength);
-          // Add Stock to Hash Table
+          // Add Stock to Name Hash Table
             HashTableEntry temp(istring,wstring,i);
             myTable->Add(temp);
+          // Add Stock to WKN Hash Table
+            mySecondTable->Add(temp);
     }
 }
 
@@ -573,6 +640,7 @@ int main()
 
     Stock* stockStorageArray = new Stock[stockDataSize];
     HashTable* nameTable = new HashTable;
+    HashTable* wknTable = new HashTable;
 
     int opNumber = -1;
 
@@ -601,15 +669,24 @@ int main()
                 // Add Stock to HashTable
                 HashTableEntry newEntry(name,wkn,positionInMemory);
                 nameTable->Add(newEntry);
-                cout << "Successfully added new Stock: " << stockStorageArray[0].name << endl;
+
+                // Add Stock to WKN-Table
+                wknTable->AddViaWKN(newEntry);
+
+                //cout << "Successfully added new Stock: " << stockStorageArray[0].name << endl;
                 displayOperationEndLine();
                 break;
             }
         case 1:         // Delete Stock
             {
+                cout << "Info: WKN and Name needed since BOTH Tables AND Memory has to be deleted.." << endl
+                     << ".. in order to ensure a safe deletion mechanism." << endl;
                 string name;
                 cout << "Please enter the name of the Stock: ";
                 cin >> name;
+                string wkn;
+                cout << "Please enter the wkn of the Stock: ";
+                cin >> wkn;
 
                 // Delete From Memory
                 int stockLocationInMemory = nameTable->FindByName(name);
@@ -619,6 +696,8 @@ int main()
                 }
                  // Delete From HashTable
                 nameTable->DeleteFromTable(name);
+                 // Delete From WknTable
+                wknTable->DeleteFromTableViaWKN(wkn);
                 displayOperationEndLine();
                 break;
             }
@@ -636,7 +715,7 @@ int main()
                 if(stockLocationInMemory != -1)
                 {
                     try {
-                        importStockData(fileName, stockStorageArray[stockLocationInMemory],stockDataSize); // Writes DIRECTLY into the given STOCK
+                        importStockData(fileName, stockStorageArray[stockLocationInMemory],30); // Writes DIRECTLY into the given STOCK
                     }
                     catch(...) {
                         cout << "File not found/or could not be read" << endl;
@@ -651,19 +730,43 @@ int main()
             }
         case 3:         // Find/Display Stock Data (by Name)
             {
-                string name;
-                cout << "Please enter the name of the Stock: ";
-                cin >> name;
+                cout << "(1) Find by Name" << endl;
+                cout << "(2) Find by WKN" << endl;
+                int opFind;
+                cin >> opFind;
+                if(opFind == 1)
+                {
+                    string name;
+                    cout << "Please enter the name of the Stock: ";
+                    cin >> name;
 
-                int stockLocationInMemory = nameTable->FindByName(name);
-                // Print everything thats in "Stock"
-                if(stockLocationInMemory != -1)
-                {
-                    printStockDataSets(stockStorageArray[stockLocationInMemory]);
+                    int stockLocationInMemory = nameTable->FindByName(name);
+                    // Print everything thats in "Stock"
+                    if(stockLocationInMemory != -1)
+                    {
+                        printStockDataSets(stockStorageArray[stockLocationInMemory]);
+                    }
+                    else if(stockLocationInMemory == -1)
+                    {
+                        cout << "The stock with name " << name << " has already been deleted from the Table." << endl;
+                    }
                 }
-                else if(stockLocationInMemory == -1)
+                else if(opFind == 2)
                 {
-                    cout << "The stock with name " << name << " has been deleted from the Table." << endl;
+                    string wkn;
+                    cout << "Please enter the WKN of the Stock: ";
+                    cin >> wkn;
+
+                    int stockLocationInMemory = wknTable->FindByWKN(wkn);
+                    // Print everything thats in "Stock"
+                    if(stockLocationInMemory != -1)
+                    {
+                        printStockDataSets(stockStorageArray[stockLocationInMemory]);
+                    }
+                    else if(stockLocationInMemory == -1)
+                    {
+                        cout << "The stock with WKN " << wkn << " has already been deleted from the Table." << endl;
+                    }
                 }
                 displayOperationEndLine();
             }
@@ -703,19 +806,18 @@ int main()
             break;
         case 5:     // SAVE/EXPORT To File
             {
-                cout << stockStorageArray->entrySize << endl;
-                save(nameTable, stockStorageArray, stockDataSize);
-                cout<<"done!"<<endl;
+                save(nameTable, wknTable, stockStorageArray, stockDataSize);
+                cout<<"Successfully saved Data!"<<endl;
             }
             break;
         case 6:     // LOAD Table
             {
-                import(nameTable, stockStorageArray, stockDataSize);
-                cout<<"done!"<<endl;
+                import(nameTable, wknTable, stockStorageArray, stockDataSize);
+                cout<<"Successfully loaded Data!"<<endl;
             }
             break;
         case 7:     // Dummy Fill
-            dummyFill(nameTable, stockStorageArray,stockDataSize);
+            dummyFill(nameTable,wknTable, stockStorageArray,stockDataSize);
             break;
         case 8:     // Currently Unused
             break;
