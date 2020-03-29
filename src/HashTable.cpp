@@ -55,7 +55,7 @@ int HashTable::FindEntryPos(std::string ENTRYNAME) // Returns -1 for ERROR;
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 30 ) // Break if successful OR after 30 collisions
+        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
@@ -104,7 +104,7 @@ int HashTable::FindEntryPosViaWKN(std::string WKN) // Returns -1 for ERROR;
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 30 ) // Break if successful OR after 30 collisions
+        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
@@ -207,7 +207,7 @@ int HashTable::FindPositionForEntry(int KEY)
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 30 ) // Break if successful OR after 30 collisions
+        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
@@ -262,7 +262,7 @@ int HashTable::FindPositionForEntryViaWKN(int KEY)
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 30 ) // Break if successful OR after 30 collisions
+        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
