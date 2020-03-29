@@ -34,7 +34,6 @@ int HashTable::calculateHash(std::string entryName) // Calculates Hash-Key based
       hashValue = (hashValue * seed) + entryName[i];
     }
     hashValue %= arraySize;
-    std::cout << hashValue << std::endl;
     return hashValue;
 }
 
@@ -55,7 +54,7 @@ int HashTable::FindEntryPos(std::string ENTRYNAME) // Returns -1 for ERROR;
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
+        while(collisions <= 1005 ) // Break if successful OR after 1005 ( *2 ) collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
@@ -104,7 +103,7 @@ int HashTable::FindEntryPosViaWKN(std::string WKN) // Returns -1 for ERROR;
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
+        while(collisions <= 1005 ) // Break if successful OR after 1005 ( *2 ) collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
@@ -207,7 +206,7 @@ int HashTable::FindPositionForEntry(int KEY)
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
+        while(collisions <= 1005 ) // Break if successful OR after 1005 ( *2 ) collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
@@ -218,6 +217,7 @@ int HashTable::FindPositionForEntry(int KEY)
                     newPositionPositive%=arraySize;
                     if (this->Elements[newPositionPositive].name == "EMPTY" )
                     {
+                        std::cout << "Found new Position ->" << newPositionPositive << " through quadratic probing !" << std::endl;
                         return newPositionPositive;
                     }
                 }
@@ -228,6 +228,7 @@ int HashTable::FindPositionForEntry(int KEY)
                     newPositionNegative = newPositionNegative < 0 ? newPositionNegative+=arraySize : newPositionNegative;
                     if (this->Elements[newPositionNegative].name == "EMPTY" )
                     {
+                        std::cout << "Found new Position ->" << newPositionNegative << " through quadratic probing !" << std::endl;
                         return newPositionNegative;
                     }
                 }
@@ -262,7 +263,7 @@ int HashTable::FindPositionForEntryViaWKN(int KEY)
         int newPositionNegative = KEY;
         int collisions = 0;
 
-        while(collisions <= 2010 ) // Break if successful OR after 2010 collisions
+        while(collisions <= 1005 ) // Break if successful OR after 1005 ( *2 ) collisions
         {
             collisions++;
             for(int i=0; i<2;i++) // Check both directions before increasing collusions
@@ -273,6 +274,7 @@ int HashTable::FindPositionForEntryViaWKN(int KEY)
                     newPositionPositive%=arraySize;
                     if (this->Elements[newPositionPositive].wkn == "EMPTY" )
                     {
+                        std::cout << "Found new Position ->" << newPositionPositive << " through quadratic probing !" << std::endl;
                         return newPositionPositive;
                     }
                 }
@@ -283,6 +285,7 @@ int HashTable::FindPositionForEntryViaWKN(int KEY)
                     newPositionNegative = newPositionNegative < 0 ? newPositionNegative+=arraySize : newPositionNegative;
                     if (this->Elements[newPositionNegative].wkn == "EMPTY" )
                     {
+                        std::cout << "Found new Position ->" << newPositionNegative << " through quadratic probing !" << std::endl;
                         return newPositionNegative;
                     }
                 }

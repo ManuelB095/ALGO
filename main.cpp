@@ -858,6 +858,9 @@ int main()
         case 8:     // Currently Unused
             break;
         case 9:     // EXIT Program
+            delete[] stockStorageArray;
+            delete nameTable;
+            delete wknTable;
             return 0;
         }
         if(opNumber > 9 || opNumber < 0)
@@ -866,5 +869,8 @@ int main()
         }
     } // -> END OF PROGRAM WHILE LOOP
     // -> END OF MAIN :
+    delete[] stockStorageArray;
+    delete nameTable;
+    delete wknTable;
     return 0;
 }
