@@ -656,7 +656,7 @@ void dummyFill(HashTable* myTable,HashTable* mySecondTable, Stock* myStorageArra
             HashTableEntry temp(istring,wstring,i);
             myTable->Add(temp);
           // Add Stock to WKN Hash Table
-            mySecondTable->Add(temp);
+            mySecondTable->AddViaWKN(temp);
     }
 }
 

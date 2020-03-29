@@ -27,11 +27,15 @@ HashTable::~HashTable()
 int HashTable::calculateHash(std::string entryName) // Calculates Hash-Key based on entry.name
 {
     int arraySize = sizeof(this->Elements)/sizeof(this->Elements[0]); // To find out size of HashTable
-
-    std::hash<std::string> hasher;
-    auto hashed = hasher(entryName);
-    hashed %= arraySize;
-    return hashed;
+    int seed = 131; // Random Seed; Found that 131 works quite goog ( tip from the internet )
+    unsigned long hashValue = 0;
+    for(int i = 0; i < entryName.length(); i++)
+    {
+      hashValue = (hashValue * seed) + entryName[i];
+    }
+    hashValue %= arraySize;
+    std::cout << hashValue << std::endl;
+    return hashValue;
 }
 
 int HashTable::FindEntryPos(std::string ENTRYNAME) // Returns -1 for ERROR;
