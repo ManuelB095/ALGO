@@ -7,8 +7,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <ctime>
-#include <cstdlib>
+#include <ctime>    // Needed for Random Generator ( Dummy Fill ) -> Random Seed
+#include <cstdlib>  // Needed for Random Generator ( Dummy Fill )
 
 using std::cout;
 using std::cin;
@@ -17,7 +17,20 @@ using std::string;
 
 using std::ifstream;
 
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+
+/** BEGINNING OF FUNCTIONS BLOCK **/
+
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+
+
+/** ////////////////////////////////////////////////////////////////////////////// **/
+
 /** MENU FUNCTIONS **/
+
+/** ////////////////////////////////////////////////////////////////////////////// **/
 void displayMenu()
 {
     cout << "(0)ADD New Stock ( by Name )" << endl;
@@ -35,8 +48,11 @@ void displayOperationEndLine()
     cout << "--------------------------------------------------" << endl;
     cout << endl;
 }
+/** ////////////////////////////////////////////////////////////////////////////// **/
 
-/** FILE IMPORTS/EXPORTS**/
+/** FILE IMPORTS/EXPORTS **/
+
+/** ////////////////////////////////////////////////////////////////////////////// **/
 void importStockData(string filename, Stock& newStock, int MAXCOUNT)
 {
     DataSet firstThirtySets[MAXCOUNT];
@@ -109,7 +125,13 @@ void importStockData(string filename, Stock& newStock, int MAXCOUNT)
     }
 }
 
-int findNextAvailablePosition(Stock* myStorageArray, int arrLength)
+/** ////////////////////////////////////////////////////////////////////////////// **/
+
+/** STOCK MEMORY FUNCTIONS **/
+
+/** ////////////////////////////////////////////////////////////////////////////// **/
+
+int findNextAvailablePosition(Stock* myStorageArray, int arrLength) // Searches for available Memory for the data of a new Stock
 {
     for(int i=0; i<arrLength;i++)
     {
@@ -161,6 +183,8 @@ void deleteStockDataSets(Stock& myStock)
         myStock.stockEntrys[i] = EmptySet;
     }
 }
+
+/** PLOT FUNCTIONS **/
 
 //Plotfunktionen
 double getMax(Stock& myStock, int wert)
@@ -346,6 +370,12 @@ void plot(Stock& myStock, int wert)
 
 }
 
+/** ////////////////////////////////////////////////////////////////////////////// **/
+
+/**SAVE AND LOAD TABLE FUNCTIONS **/
+
+/** ////////////////////////////////////////////////////////////////////////////// **/
+
 //Save Funktionen
 
 void save(HashTable* hashTable,HashTable* wknTable, Stock* stockTable, int stockTableLength)
@@ -372,9 +402,7 @@ void save(HashTable* hashTable,HashTable* wknTable, Stock* stockTable, int stock
         for(int i=0;i<stockTableLength;i++)
         {
             stockFile<< stockTable[i].name << "," << stockTable[i].wkn << "," << stockTable[i].kurzel << endl;
-            //stockFile<< "Date,Open,High,Low,Close,Volume,Adj Close"<< endl;
-            //cout << stockTable->entrySize;
-            for(int y=0;y<stockTable->entrySize;y++) /** Hardcoded because for some reason stockTable->entrySize is always equal to five **/
+            for(int y=0;y<stockTable->entrySize;y++)
             {
                 stockFile<< stockTable[i].stockEntrys[y].date <<","<< stockTable[i].stockEntrys[y].open <<","<<stockTable[i].stockEntrys[y].high <<","<<stockTable[i].stockEntrys[y].low <<","<<stockTable[i].stockEntrys[y].close <<","<<stockTable[i].stockEntrys[y].volume <<","<<stockTable[i].stockEntrys[y].adjClose<< endl;
             }
@@ -384,7 +412,7 @@ void save(HashTable* hashTable,HashTable* wknTable, Stock* stockTable, int stock
 
 //Import-Funktion
 
-void import(HashTable* hashTable, HashTable* wknTable, Stock* stockTable, int stockTableLength) //change to 30 when done
+void import(HashTable* hashTable, HashTable* wknTable, Stock* stockTable, int stockTableLength)
 {
     string line;
     char separator = ',';
@@ -493,13 +521,13 @@ void import(HashTable* hashTable, HashTable* wknTable, Stock* stockTable, int st
     ifstream stockFile;
     saveFile.open("StockSave.csv");
     counter=0;
-    DataSet firstThirtySets[30]; //change to 30? when done
+    DataSet firstThirtySets[30];
     int stockCounter=0;
     int dataSetCounter=0;
 
         if (saveFile.is_open() )
     {
-            while( getline(saveFile,line)&& counter<(2011*31))//Change this to 2011*31 ( 30 Stock Data + Stock Info times 2011 Entrys )
+            while( getline(saveFile,line)&& counter<(2011*31)) // ( 30 for Stock Data + 1 for Stock Info times 2011 for all possible Entrys )
             {
                 std::stringstream linestream(line);
                 string::size_type size_t;
@@ -542,9 +570,7 @@ void import(HashTable* hashTable, HashTable* wknTable, Stock* stockTable, int st
                 }
                 else
                 {
-
-                    //DataSet temporarySet;
-                     if(dataSetCounter%30==0) //change this to 30 when done
+                     if(dataSetCounter%30==0)
                     {
                         dataSetCounter=0;
                     }
@@ -589,13 +615,17 @@ void import(HashTable* hashTable, HashTable* wknTable, Stock* stockTable, int st
 
             dataSetCounter++;
             }
-
             counter++;
             }
-
         saveFile.close();
     }
 }
+
+/** ////////////////////////////////////////////////////////////////////////////// **/
+
+/** DUMMY FILL **/
+
+/** ////////////////////////////////////////////////////////////////////////////// **/
 
 void dummyFill(HashTable* myTable,HashTable* mySecondTable, Stock* myStorageArray, int storArrLength)
 {
@@ -618,6 +648,10 @@ void dummyFill(HashTable* myTable,HashTable* mySecondTable, Stock* myStorageArra
             string counterString = std::to_string(i);
             Stock newStock(istring,wstring,counterString);
             int positionInMemory = PutStockInMemory(newStock,myStorageArray, storArrLength);
+            if(positionInMemory == -1)
+            {
+                cout << "ERROR: Dummy Fill threw an error while writing Data into Memory !";
+            }
           // Add Stock to Name Hash Table
             HashTableEntry temp(istring,wstring,i);
             myTable->Add(temp);
@@ -626,21 +660,23 @@ void dummyFill(HashTable* myTable,HashTable* mySecondTable, Stock* myStorageArra
     }
 }
 
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+
+/** END OF FUNCTIONS BLOCK **/
+
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+/** XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**/
+
 
 int main()
 {
-    /** TO DO: Implement stockStorageArray and HashTable on the HEAP instead of the STACK.
-        Other Functions will have to be adjusted a bit for that to work ( pass by reference for example with : *&myArray )
+    std::srand(std::time(nullptr)); // Generates Random Seed for rand() function to work properly
+    int stockDataSize = 2011;       // Size of Memory Array ( depending on HashTable Size )
 
-        TO DO: Implement LOAD/SAVE Table -> The only REAL Work still left to do. This one might get on our nerves.
-               I have a basic import function for Stock Data in Place already, which might be useful.
-     **/
-    std::srand(std::time(nullptr));
-    int stockDataSize = 2011;
-
-    Stock* stockStorageArray = new Stock[stockDataSize];
-    HashTable* nameTable = new HashTable;
-    HashTable* wknTable = new HashTable;
+    Stock* stockStorageArray = new Stock[stockDataSize]; // Memory Storage for Stocks and their Course Data
+    HashTable* nameTable = new HashTable;                // Hash Table for Names
+    HashTable* wknTable = new HashTable;                 // Hash Table for WKN
 
     int opNumber = -1;
 
@@ -828,82 +864,7 @@ int main()
         {
             cout << "Something went wrong." << endl;
         }
-    }
-
-
-/**$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTING AREA - NOT RELEVANT ANYMORE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$**/
-/** Test: Import Stock Data and Add new Stock to Memory AND Table **/
-
-//    int MAXCOUNT = 5; // Change to 30 when done
-//
-//    Stock microsoftStock("Microsoft","0001","ST1");
-//
-//    /** Test: Artificially insert Stock to test program **/
-//    Stock teslaStock("Tesla","0002","ST2");
-//    stockStorageArray[0] = teslaStock;
-//
-//    int nextAvailablePosition = findNextAvailablePosition(stockStorageArray);
-//    if(nextAvailablePosition == -1)
-//    {
-//        return 1;
-//    }
-//    cout << stockStorageArray[nextAvailablePosition].name;
-//    stockStorageArray[nextAvailablePosition] = microsoftStock;
-//    cout << stockStorageArray[nextAvailablePosition].name;
-//
-//    importStockData("msft.csv", stockStorageArray[nextAvailablePosition], MAXCOUNT);
-//
-//    for(int i=0; i < MAXCOUNT; i++)
-//    {
-//        cout << stockStorageArray[0].name << endl;
-//        cout << stockStorageArray[0].stockEntrys[i].date << " ";
-//        cout << stockStorageArray[0].stockEntrys[i].close << " ";
-//        cout << stockStorageArray[0].stockEntrys[i].high << " ";
-//        cout << stockStorageArray[0].stockEntrys[i].adjClose << endl;
-//    }
-//
-//    HashTableEntry csvEntry("Microsoft","0001", nextAvailablePosition);
-//    cout << "Memory Location: " << csvEntry.memoryLocation << endl;
-//
-//    csvTable.Add(csvEntry);
-//    csvTable.FindByName(csvEntry.name);
-
-
-/**$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$**/
-
-    /** TEST: READ IN test Data into entry element **/
-//    HashTableEntry testEntry("Microsoft","001", 5);
-//    HashTableEntry testEntry2("Tesla", "002", 6);
-
-    /** TEST: READ Stocks into HashTable **/
-
-//    HashTable myTable;
-//
-//    myTable.Add(testEntry); // Puts testEntry on position 261 in table;
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 262; Offset 2^0 = 1
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 263; Offset 2^1 = 2
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 265 ; Offset 2^2 = 4
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 269 ; Offset 2^3 = 8
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 277 ; Offset 2^4 = 16
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 293 ; Offset 2^5 = 32
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 325 ; Offset 2^6 = 64
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 389 ; Offset 2^7 = 128
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 517 ; Offset 2^8 = 256
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 773 ; Offset 2^9 = 512
-//    myTable.Add(testEntry); // Tests quadratic probing: testEntry again on position 1285%1001 = 284 ; Offset 2^10 = 1024 CRITICAL SECTION HERE!
-
-//    myTable.Add(testEntry2);
-//
-//    myTable.FindByName(testEntry.name);
-//    myTable.FindByName(testEntry2.name);
-//    myTable.DeleteFromTable(testEntry);
-//    myTable.DeleteFromTable(testEntry); // This should produce an ERROR
-//    myTable.FindByName(testEntry.name); // This should produce an ERROR
-//    myTable.Add(testEntry);
-//    myTable.FindByName(testEntry.name);
-//
-//    myTable.printAllEntrys();
-
-    /** All Tests up to here ran successfully ! **/
+    } // -> END OF PROGRAM WHILE LOOP
+    // -> END OF MAIN :
     return 0;
 }

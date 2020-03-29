@@ -12,7 +12,7 @@ class Stock            // Data Structure to save Financial Data into.
         std::string wkn;
         std::string kurzel;
         DataSet stockEntrys[30];
-        int entrySize = sizeof(stockEntrys)/sizeof(stockEntrys[0]); // Tried with = 30, does not solve the problem
+        int entrySize = sizeof(stockEntrys)/sizeof(stockEntrys[0]);
 
         Stock(const Stock& other);
         Stock();

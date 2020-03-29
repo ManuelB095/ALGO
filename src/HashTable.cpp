@@ -3,7 +3,7 @@
 
 HashTable::HashTable()
 {
-    HashTableEntry EmptyEntry("EMPTY","EMPTY",-1); /**!! Changed second parameter from WKN to EMPTY !!**/
+    HashTableEntry EmptyEntry("EMPTY","EMPTY",-1);
     int arraySize = sizeof(this->Elements)/sizeof(this->Elements[0]);
     for(int i=0; i < arraySize;i++)
     {
