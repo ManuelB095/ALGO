@@ -7,6 +7,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <ctime>
+#include <cstdlib>
 
 using std::cout;
 using std::cin;
@@ -25,6 +27,7 @@ void displayMenu()
     cout << "(4)Plot Stock Data" << endl;
     cout << "(5)Save/Export to File" << endl;
     cout << "(6)Load Table" << endl;
+    cout << "(7)Load Table" << endl;
     cout << "(9)Exit Program" << endl;
 }
 void displayOperationEndLine()
@@ -431,13 +434,13 @@ void import(HashTable* hashTable, Stock* stockTable, int stockTableLength) //cha
 
         if (saveFile.is_open() )
     {
-            while( getline(saveFile,line)&& counter<(2011*6))//Change this to 2011*6 once done
+            while( getline(saveFile,line)&& counter<(2011*31))//Change this to 2011*31 ( 30 Stock Data + Stock Info times 2011 Entrys )
             {
                 std::stringstream linestream(line);
                 string::size_type size_t;
                 columns =3;
 
-                if(counter%6==0)
+                if(counter%31==0)
                 {
                      for(int i=0;i<columns;i++)
                     {
@@ -529,6 +532,34 @@ void import(HashTable* hashTable, Stock* stockTable, int stockTableLength) //cha
     }
 }
 
+void dummyFill(HashTable* myTable, Stock* myStorageArray, int storArrLength)
+{
+    for(int i=0; i < 1500; i++ ) // Make 1500 random dummy entrys
+    {
+        string istring = "";
+        string wstring = "";
+        for(int j=0; j<5;j++) // WKN and Name consist of random ASCII chars
+        {
+            int randomNumber = std::rand() % 26 + 65;
+            char randomAscii = (char)randomNumber;
+            istring = istring + randomAscii;
+
+            int randomWKN = std::rand() %26 + 65;
+            char randomWKNchar = (char)randomWKN;
+            wstring = wstring + randomWKNchar;
+        }
+
+          // Add Stock to Memory
+            string counterString = std::to_string(i);
+            Stock newStock(istring,wstring,counterString);
+            int positionInMemory = PutStockInMemory(newStock,myStorageArray, storArrLength);
+          // Add Stock to Hash Table
+            HashTableEntry temp(istring,wstring,i);
+            myTable->Add(temp);
+    }
+}
+
+
 int main()
 {
     /** TO DO: Implement stockStorageArray and HashTable on the HEAP instead of the STACK.
@@ -537,7 +568,7 @@ int main()
         TO DO: Implement LOAD/SAVE Table -> The only REAL Work still left to do. This one might get on our nerves.
                I have a basic import function for Stock Data in Place already, which might be useful.
      **/
-
+    std::srand(std::time(nullptr));
     int stockDataSize = 2011;
 
     Stock* stockStorageArray = new Stock[stockDataSize];
@@ -683,7 +714,8 @@ int main()
                 cout<<"done!"<<endl;
             }
             break;
-        case 7:     // Currently Unused
+        case 7:     // Dummy Fill
+            dummyFill(nameTable, stockStorageArray,stockDataSize);
             break;
         case 8:     // Currently Unused
             break;
