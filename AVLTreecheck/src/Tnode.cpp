@@ -90,7 +90,75 @@ int calcBalanceFactor(Tnode* T) // Almost the same as height. The difference is,
 	else
 		rightHeight = 1 + T->right->height;
 
-	return(leftHeight - rightHeight);
+	return(rightHeight - leftHeight);
+}
+
+void runCheck(Tnode* T) // Reverse Postorder
+{
+    if (T == NULL)
+        return;
+
+    // first recur on right subtree
+    runCheck(T->right);
+
+    // then recur on left subtree
+    runCheck(T->left);
+
+    // After Recursion Code for every node
+    int BF = calcBalanceFactor(T);
+    if(BF!=0)
+    {
+        std::cout << "bal(" << T->key << ") = " << BF << " (AVL Violation !)" << std::endl;
+    }
+    else
+    {
+        std::cout << "bal(" << T->key << ") = " << BF << " (OK)" << std::endl;
+    }
+}
+
+int findMin(Tnode* T)
+{
+    while(T->left != NULL)
+    {
+        T = T->left;
+    }
+    int temp = T->key;
+    return temp;
+}
+int findMax(Tnode* T)
+{
+    while(T->right != NULL)
+    {
+        T = T->right;
+    }
+    int temp = T->key;
+    return temp;
+}
+
+int findAverage(Tnode* T, int keySum)
+{
+    if(T == NULL)
+    {
+        return keySum;
+    }
+    keySum = findAverage(T->right, keySum);
+    keySum = findAverage(T->left, keySum);
+
+    keySum += T->key;
+    return keySum;
+}
+
+int countElements(Tnode* T, int counter)
+{
+    if(T == NULL)
+    {
+        return counter;
+    }
+    counter = countElements(T->right, counter);
+    counter = countElements(T->left, counter);
+
+    counter++;
+    return counter;
 }
 
 void freeTheTree(Tnode* T)
