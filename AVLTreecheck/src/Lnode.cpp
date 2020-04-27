@@ -11,7 +11,6 @@ Lnode* createLHead()
 
 }
 
-
 Lnode* createLnode(int d)
 {
     Lnode* temp = (Lnode*)malloc(sizeof(Lnode));

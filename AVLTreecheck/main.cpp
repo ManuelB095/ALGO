@@ -3,12 +3,30 @@
 #include <string>
 #include <ctime>
 #include <stdlib.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 #include "Lnode.h"
 #include "Tnode.h"
 
-
 using namespace std;
+
+int importTreeData(string filename, vector<int>& storVec )
+{
+    ifstream treeFile;
+    treeFile.open(filename);
+
+    if(treeFile.is_open())
+    {
+        int temp = 0;
+        while(treeFile >> temp)
+        {
+            storVec.push_back(temp);
+        }
+    }
+    treeFile.close();
+}
 
 Lnode* head = createLHead(); // Initialise List with empty node
 Tnode* treeTop = NULL;
@@ -16,17 +34,19 @@ Tnode* treeTop = NULL;
 int main()
 {
     srand(time(0));
+    vector<int> avlKeys;
+    importTreeData("treeData.csv", avlKeys);
 
-    int avlkey[10] = {5,3,17,9,23,54,11,79,30,12};
-    size_t keySetSize = sizeof(avlkey)/ sizeof(avlkey[0]);
-    cout << keySetSize << endl;
-    for(int i=0; i < keySetSize ; i++)
+    for(vector<int>::iterator iter = avlKeys.begin(); iter != avlKeys.end(); ++iter)
     {
-        treeTop = appendTree(treeTop, avlkey[i]);
+        treeTop = appendTree(treeTop, *iter);
     }
-    //displayList(head);
+
+    cout << "Elements in Descending Order: " << endl;
     treeToList(treeTop, head);
     displayList(head);
+    //size_t keySetSize = avlKeys.size();
+    //cout << "SetSize: " << keySetSize << endl;
 
     cout << "Balance Factor: " << calcBalanceFactor(treeTop) << " " <<
     calcBalanceFactor(treeTop->right) << " " << calcBalanceFactor(treeTop->right->right)
