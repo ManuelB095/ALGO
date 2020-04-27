@@ -10,9 +10,69 @@
 #include "Lnode.h"
 #include "Tnode.h"
 
-using namespace std;
+// Use Clauses
+using std::string;
+using std::vector;
+using std::cout;
+using std::cin;
+using std::endl;
+using std::ifstream;
 
-int importTreeData(string filename, vector<int>& storVec )
+// Helper Functions
+void importTreeData(string filename, vector<int>& storVec );
+// Important Globals
+Lnode* head = createLHead(); // Initialise List with empty node
+Tnode* treeTop = NULL;
+
+int main() // int main (argc , char * argv[]) More on this at the Bottom of main.cpp
+{
+    /** Set Random Seed **/
+    srand(time(0));
+
+    /** Ask for Import File **/
+    string inputFile; // treeData.csv
+    cout << "Please specify the input file for treecheck: " << endl;
+    cin >> inputFile;
+    cout << endl;
+
+
+    /** Import Data for Binary Tree **/
+    vector<int> avlKeys;
+    importTreeData(inputFile, avlKeys);
+    for(vector<int>::iterator iter = avlKeys.begin(); iter != avlKeys.end(); ++iter)
+    {
+        treeTop = appendTree(treeTop, *iter);
+    }
+
+
+    /** Display Tree Elements via Linked List **/
+    cout << "Elements in Descending Order: " << endl;
+    treeToList(treeTop, head);
+    displayList(head);
+    cout << endl;
+
+
+    /** Determine+Display Results **/
+    cout << "Results: " << endl;
+    if(isAVL(treeTop))
+        cout << "|Avl: " << " YES";
+    else{
+        cout << "|Avl: " << " NO";
+    }
+    cout << " |Min: " << findMin(treeTop);
+    cout << " |Max: " << findMax(treeTop);
+    cout << " |Average: " << findAverage(treeTop);  //(treeTop, 0) / (double)countElements(treeTop,0);
+    cout << endl;
+
+
+    /** Free Memory of List and Binary Tree **/
+    freeMemory(head);
+    freeTheTree(treeTop);
+
+    return 0;
+}
+
+void importTreeData(string filename, vector<int>& storVec )
 {
     ifstream treeFile;
     treeFile.open(filename);
@@ -28,50 +88,26 @@ int importTreeData(string filename, vector<int>& storVec )
     treeFile.close();
 }
 
-Lnode* head = createLHead(); // Initialise List with empty node
-Tnode* treeTop = NULL;
+/**
+Since we may or may not have to open the exe on the command line and enter arguments, I prepared a quick guide on how to
+implement that.
 
-int main()
-{
-    srand(time(0));
-    vector<int> avlKeys;
-    importTreeData("treeData.csv", avlKeys);
+First, change your main from this: int main() {
+To this : int main (int argc, char * argv[]) {
+This will allow the program to take values given by the console.
 
-    for(vector<int>::iterator iter = avlKeys.begin(); iter != avlKeys.end(); ++iter)
-    {
-        treeTop = appendTree(treeTop, *iter);
-    }
+In the console, open the exe as follows:
+/SomeFolders/AVLTreecheck.exe 1 treeData.csv // Or maybe "treeData.csv" haven`t tried it out yet.
 
-    cout << "Elements in Descending Order: " << endl;
-    treeToList(treeTop, head);
-    displayList(head);
-    //size_t keySetSize = avlKeys.size();
-    //cout << "SetSize: " << keySetSize << endl;
+This sets argumentCount ( argc to 1 ) and the filename (argv) to "treeData.csv"
+With this, you can simply check if the right argument count is given ( if not prompt again for the filename ! ), parse the
+char array to std::string ( for each character string += character ) and set
+inputFile equal to that.
 
-    cout << "Balance Factor: " << calcBalanceFactor(treeTop) << " " <<
-    calcBalanceFactor(treeTop->right) << " " << calcBalanceFactor(treeTop->right->right)
-    << " " << calcBalanceFactor(treeTop->right->right->right) << endl;
+Now, with this, we should be Set.
 
-    cout << "With Run Check: " << endl;
-    runCheck(treeTop);
+!IMPORTANT! : You can still debug this. Got to Project->Set Program`s Arguments and select 'Debug'.
+There, type the arguments like you would normally do in the console
 
-    cout << endl;
-    cout << "Results: " << endl;
-    int rootBF = calcBalanceFactor(treeTop);
-    if(rootBF > 1 || rootBF < -1)
-    {
-        cout << "|Avl: " << " NO";
-    }
-    else{
-        cout << "|Avl: " << " YES";
-    }
-    cout << " |Min: " << findMin(treeTop);
-    cout << " |Max: " << findMax(treeTop);
-    cout << " |Average: " << findAverage(treeTop, 0) / (double)countElements(treeTop,0);
-    cout << endl;
+ **/
 
-    freeMemory(head);
-    freeTheTree(treeTop);
-
-    return 0;
-}

@@ -21,13 +21,10 @@ int height(Tnode* T);
 int calcBalanceFactor(Tnode *T);
 int findMin(Tnode* T);
 int findMax(Tnode* T);
-int findAverage(Tnode* T, int keySum);
-int countElements(Tnode* T, int counter);
+double findAverage(Tnode* T);
+bool isAVL(Tnode* T);
 
-void runCheck(Tnode* T);
+void findAvgValues(Tnode* T, int& keySum, unsigned int& counter);
+void runCheck(Tnode* T, bool& isAVL);
 void freeTheTree(Tnode* T);
-
-
-
-
 #endif // TNODE_H

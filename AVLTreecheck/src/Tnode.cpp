@@ -1,15 +1,5 @@
 #include "Tnode.h"
 
-//Tnode* createTHead()
-//{
-//    Tnode* temp = (Tnode*)malloc(sizeof(Tnode));
-//    temp->key = NULL;
-//    temp->height = NULL;
-//    temp->left = NULL;
-//    temp->right = NULL;
-//    return temp;
-//}
-
 Tnode* createTnode(int d)
 {
     Tnode* temp = (Tnode*)malloc(sizeof(Tnode));
@@ -93,27 +83,35 @@ int calcBalanceFactor(Tnode* T) // Almost the same as height. The difference is,
 	return(rightHeight - leftHeight);
 }
 
-void runCheck(Tnode* T) // Reverse Postorder
+void runCheck(Tnode* T, bool& isAVL) // Reverse Postorder
 {
     if (T == NULL)
         return;
 
     // first recur on right subtree
-    runCheck(T->right);
+    runCheck(T->right, isAVL);
 
     // then recur on left subtree
-    runCheck(T->left);
+    runCheck(T->left, isAVL);
 
     // After Recursion Code for every node
     int BF = calcBalanceFactor(T);
     if(BF!=0)
     {
         std::cout << "bal(" << T->key << ") = " << BF << " (AVL Violation !)" << std::endl;
+        isAVL = false;
     }
     else
     {
         std::cout << "bal(" << T->key << ") = " << BF << " (OK)" << std::endl;
     }
+}
+
+bool isAVL(Tnode* T)
+{
+    bool isAvlTree = false;
+    runCheck(T, isAvlTree);
+    return isAvlTree;
 }
 
 int findMin(Tnode* T)
@@ -135,31 +133,29 @@ int findMax(Tnode* T)
     return temp;
 }
 
-int findAverage(Tnode* T, int keySum)
+void findAvgVals(Tnode* T, int& keySum, unsigned int& counter)
 {
     if(T == NULL)
     {
-        return keySum;
+        return;
     }
-    keySum = findAverage(T->right, keySum);
-    keySum = findAverage(T->left, keySum);
+    findAvgVals(T->right, keySum, counter);
+    findAvgVals(T->left, keySum, counter);
 
     keySum += T->key;
-    return keySum;
+    ++counter;
 }
 
-int countElements(Tnode* T, int counter)
+double findAverage(Tnode* T)
 {
-    if(T == NULL)
-    {
-        return counter;
-    }
-    counter = countElements(T->right, counter);
-    counter = countElements(T->left, counter);
-
-    counter++;
-    return counter;
+    int keySum = 0;
+    unsigned int counter = 0;
+    double avg = 0;
+    findAvgVals(T, keySum, counter);
+    avg = (double)keySum/(double)counter;
+    return avg;
 }
+
 
 void freeTheTree(Tnode* T)
 {

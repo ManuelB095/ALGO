@@ -116,7 +116,6 @@ Lnode* treeToList(Tnode* T, Lnode* L)
 
 void displayList(Lnode* head)
 {
-    printf("\n");
     int counter = 0;
     Lnode* p = head;
     while(p != NULL)
