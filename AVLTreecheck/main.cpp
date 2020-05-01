@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <exception>
 
 #include "Lnode.h"
 #include "Tnode.h"
@@ -38,7 +39,15 @@ int main() // int main (argc , char * argv[]) More on this at the Bottom of main
 
     /** Import Data for Binary Tree **/
     vector<int> avlKeys;
-    importTreeData(inputFile, avlKeys);
+    try{
+        importTreeData(inputFile, avlKeys);
+    }
+    catch(std::exception& e)
+    {
+        cout << e.what() << endl;
+        return 1;
+    }
+
     for(vector<int>::iterator iter = avlKeys.begin(); iter != avlKeys.end(); ++iter)
     {
         treeTop = appendTree(treeTop, *iter);
@@ -79,6 +88,11 @@ void importTreeData(string filename, vector<int>& storVec )
 {
     ifstream treeFile;
     treeFile.open(filename);
+
+    if(treeFile.fail())
+    {
+        throw std::runtime_error("Could not open file!");
+    }
 
     if(treeFile.is_open())
     {
