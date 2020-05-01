@@ -59,8 +59,11 @@ int main() // int main (argc , char * argv[]) More on this at the Bottom of main
     else{
         cout << "|Avl: " << " NO";
     }
-    cout << " |Min: " << findMin(treeTop);
-    cout << " |Max: " << findMax(treeTop);
+    int minimum = treeTop->key;
+    int maximum = treeTop->key;
+    cout << " |(Used) MinMax-Recursive"; MinMaxRecurse(treeTop, minimum, maximum);
+    cout << " |Min: " << minimum; // Old non-recursive Functions << findMin(treeTop);
+    cout << " |Max: " << maximum; // Old non-recursive Functions << findMax(treeTop);
     cout << " |Average: " << findAverage(treeTop);  //(treeTop, 0) / (double)countElements(treeTop,0);
     cout << endl;
 

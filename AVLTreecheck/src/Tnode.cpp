@@ -109,9 +109,24 @@ void runCheck(Tnode* T, bool& isAVL) // Reverse Postorder
 
 bool isAVL(Tnode* T)
 {
-    bool isAvlTree = false;
+    bool isAvlTree = true;
     runCheck(T, isAvlTree);
     return isAvlTree;
+}
+
+void MinMaxRecurse(Tnode* T, int& MIN, int& MAX)
+{
+    if(T == NULL)
+        return;
+
+    MinMaxRecurse(T->right, MIN, MAX);
+    MinMaxRecurse(T->left, MIN, MAX);
+
+    if(T->key > MAX)
+        MAX = T->key;
+    if(T->key < MIN)
+        MIN = T->key;
+
 }
 
 int findMin(Tnode* T)

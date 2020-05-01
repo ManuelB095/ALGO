@@ -24,6 +24,7 @@ int findMax(Tnode* T);
 double findAverage(Tnode* T);
 bool isAVL(Tnode* T);
 
+void MinMaxRecurse(Tnode* T, int& MIN, int& MAX);
 void findAvgValues(Tnode* T, int& keySum, unsigned int& counter);
 void runCheck(Tnode* T, bool& isAVL);
 void freeTheTree(Tnode* T);
