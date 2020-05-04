@@ -21,6 +21,7 @@ using std::ifstream;
 
 // Helper Functions
 void importTreeData(string filename, vector<int>& storVec );
+bool alreadyInTree(int value, vector<int>& storVec);
 // Important Globals
 Lnode* head = createLHead(); // Initialise List with empty node
 Tnode* treeTop = NULL;
@@ -99,11 +100,28 @@ void importTreeData(string filename, vector<int>& storVec )
         int temp = 0;
         while(treeFile >> temp)
         {
-            storVec.push_back(temp);
+            if(!alreadyInTree(temp, storVec))
+            {
+                storVec.push_back(temp);
+            }
         }
     }
     treeFile.close();
 }
+
+bool alreadyInTree(int value, vector<int>& storVec)
+{
+    for(vector<int>::iterator i = storVec.begin(); i != storVec.end(); ++i )
+    {
+        if (*i == value)
+        {
+            return true;
+        }
+    }
+    return false;
+
+}
+
 
 /**
 Since we may or may not have to open the exe on the command line and enter arguments, I prepared a quick guide on how to
