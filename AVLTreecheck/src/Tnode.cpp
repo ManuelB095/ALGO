@@ -107,6 +107,27 @@ void runCheck(Tnode* T, bool& isAVL) // Reverse Postorder
     }
 }
 
+void checkForDuplicates(Tnode* T, bool& duplicAte, int& val)
+{
+    if (T == NULL)
+        return;
+
+    checkForDuplicates(T->right, duplicAte, val);
+    checkForDuplicates(T->left, duplicAte, val);
+
+    if(T->key == val )
+    {
+        duplicAte = true;
+    }
+}
+
+bool isDuplicate(Tnode* T, int value)
+{
+    bool duplicate = false;
+    checkForDuplicates(T, duplicate, value);
+    return duplicate;
+}
+
 bool isAVL(Tnode* T)
 {
     bool isAvlTree = true;

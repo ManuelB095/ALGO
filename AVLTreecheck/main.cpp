@@ -51,7 +51,10 @@ int main() // int main (argc , char * argv[]) More on this at the Bottom of main
 
     for(vector<int>::iterator iter = avlKeys.begin(); iter != avlKeys.end(); ++iter)
     {
-        treeTop = appendTree(treeTop, *iter);
+        if(!isDuplicate(treeTop, *iter))
+        {
+            treeTop = appendTree(treeTop, *iter);
+        }
     }
 
 
@@ -100,7 +103,7 @@ void importTreeData(string filename, vector<int>& storVec )
         int temp = 0;
         while(treeFile >> temp)
         {
-            if(!alreadyInTree(temp, storVec))
+            if(!alreadyInTree(temp, storVec)) // Double Check for Duplicates initially. But insert of new csv requires a check of sorts.
             {
                 storVec.push_back(temp);
             }

@@ -23,7 +23,9 @@ int findMin(Tnode* T);
 int findMax(Tnode* T);
 double findAverage(Tnode* T);
 bool isAVL(Tnode* T);
+bool isDuplicate(Tnode* T, int value);
 
+void checkForDuplicates(Tnode* T, bool& duplicAte, int& val);
 void MinMaxRecurse(Tnode* T, int& MIN, int& MAX);
 void findAvgValues(Tnode* T, int& keySum, unsigned int& counter);
 void runCheck(Tnode* T, bool& isAVL);
